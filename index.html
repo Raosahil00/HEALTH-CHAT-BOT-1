@@ -10,16 +10,226 @@
             font-family: 'Roboto', Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #1C1E2D; /* Dark slate base */
+            background-color: #1C1E2D; 
+            
 background-image: 
-    radial-gradient(at 47% 33%, hsl(234, 41%, 24%) 0, transparent 59%),  /* Deep blue */
-    radial-gradient(at 82% 65%, hsl(226, 39%, 28%) 0, transparent 55%),  /* Steel blue */
-    radial-gradient(at 20% 10%, hsl(232, 35%, 32%) 0, transparent 50%);  /* Dusty blue */
+    radial-gradient(at 47% 33%, hsl(234, 41%, 24%) 0, transparent 59%), 
+    radial-gradient(at 82% 65%, hsl(226, 39%, 28%) 0, transparent 55%),  
+    radial-gradient(at 20% 10%, hsl(232, 35%, 32%) 0, transparent 50%);  
             background-attachment: fixed;
             color: white;
             min-height: 100vh;
         }
+main {
+    flex: 1;
+    padding: 2rem;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
 
+.chat-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 30px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.chat-messages {
+    height: 400px;
+    overflow-y: auto;
+    padding: 20px;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.message {
+    margin: 15px 0;
+    padding: 15px 20px;
+    border-radius: 15px;
+    max-width: 70%;
+    animation: fadeIn 0.3s ease-in;
+    line-height: 1.5;
+    font-size: 1.1rem;
+}
+
+.user-message {
+    background: rgba(103, 58, 183, 0.3); 
+    margin-left: auto;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bot-message {
+    background: rgba(33, 150, 243, 0.3); 
+    margin-right: auto;
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-input {
+    display: flex;
+    gap: 15px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 30px;
+    margin-top: 20px;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.chat-input input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.chat-button {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 25px;
+    background: rgba(103, 58, 183, 0.3); 
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.chat-button:hover {
+    background: rgba(103, 58, 183, 0.5);
+    transform: translateY(-2px);
+}
+
+.chat-title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: white;
+    font-size: 1.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#content {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 3rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+}
+
+
+.chat-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+.chat-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.chat-messages {
+    height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.message {
+    margin: 10px 0;
+    padding: 10px 15px;
+    border-radius: 10px;
+    max-width: 80%;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.user-message {
+    background: rgba(255, 255, 255, 0.2);
+    margin-left: auto;
+    color: white;
+}
+
+.bot-message {
+    background: rgba(255, 255, 255, 0.15);
+    margin-right: auto;
+    color: #e0e0e0;
+}
+
+.chat-input {
+    display: flex;
+    gap: 10px;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.chat-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.chat-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
         .analysis-section {
             background: rgba(255, 255, 255, 0.1);
             padding: 1.5rem;
@@ -172,13 +382,12 @@ background-image:
         }
 
         .submit-button {
-    /* Glassmorphism base */
+    
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     
-    /* Button styling */
     color: white;
     padding: 12px 30px;
     border-radius: 25px;
@@ -190,17 +399,14 @@ background-image:
     display: block;
     margin: 2rem auto;
     
-    /* Animation setup */
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
     animation: buttonPulse 2s infinite;
     
-    /* Glass effect shadow */
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
-/* Pulse animation */
 @keyframes buttonPulse {
     0% {
         transform: scale(1);
@@ -216,7 +422,7 @@ background-image:
     }
 }
 
-/* Hover effect with preserved glassmorphism */
+
 .submit-button:hover {
     background: rgba(255, 255, 255, 0.15);
     transform: translateY(-3px);
@@ -225,13 +431,12 @@ background-image:
     animation: none;
 }
 
-/* Click effect */
 .submit-button:active {
     transform: translateY(1px);
     box-shadow: 0 5px 15px 0 rgba(31, 38, 135, 0.37);
 }
 
-/* Ripple effect */
+
 .submit-button::after {
     content: '';
     position: absolute;
@@ -254,7 +459,7 @@ background-image:
     opacity: 0;
 }
 
-/* Loading state */
+
 .submit-button.loading {
     position: relative;
     cursor: wait;
@@ -281,13 +486,13 @@ background-image:
     }
 }
 
-/* Disable hover effects while loading */
+
 .submit-button.loading:hover {
     transform: none;
     background: rgba(255, 255, 255, 0.1);
 }
 
-/* Add shimmer effect */
+
 @keyframes shimmer {
     0% {
         background-position: -100% 0;
@@ -530,13 +735,12 @@ background-image:
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #d4d4d4; /* Changed to darker white */
+            color: #d4d4d4; 
             margin-top: 3rem;
             padding: 2rem;
             border-radius: 12px;
         }
 
-        /* Add new styles for typing animation */
         .typing-text {
             overflow: hidden;
             border-right: 2px solid #fff;
@@ -567,7 +771,7 @@ background-image:
             to { opacity: 1; }
         }
 
-        /* Add styles for health metrics */
+        
         .analysis-section p {
             margin: 0.5rem 0;
             padding: 0.5rem;
@@ -599,11 +803,24 @@ background-image:
         </header>
 
         <main>
+            <section class="chat-section">
+                <h2 class="chat-title">Health Assistant Chat</h2>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message bot-message">
+                            Hello! I'm your Health Assistant. How can I help you today? You can ask me about diet plans, exercise, or general health advice.
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="userMessage" placeholder="Type your health query here...">
+                        <button onclick="sendChatMessage()" class="chat-button">Send</button>
+                    </div>
+                </div>
+            </section>
+
             <div id="content">
-                <!-- Content will be loaded here -->
             </div>
         </main>
-
        <footer>
     <div class="footer-content">
         <div class="footer-mission">
@@ -698,7 +915,75 @@ background-image:
                 `;
             }
         }
+       
 
+function sendChatMessage() {
+    const userInput = document.getElementById('userMessage').value;
+    if (!userInput.trim()) return;
+
+    addMessageToChat(userInput, 'user-message');
+
+    const botResponse = automateResponse(userInput);
+
+    setTimeout(() => {
+        addMessageToChat(botResponse, 'bot-message');
+    }, 1000);
+
+    document.getElementById('userMessage').value = '';
+}
+
+function addMessageToChat(message, className) {
+    const chatMessages = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${className}`;
+    messageDiv.textContent = message;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+document.getElementById('userMessage').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        sendChatMessage();
+    }
+});
+function automateResponse(userInput) {
+    const input = userInput.toLowerCase();
+    
+    const responses = {
+        greetings: {
+            triggers: ['hello', 'hi', 'hey', 'good morning', 'good evening'],
+            response: "Hello! I'm your Health Assistant. How can I help you today?"
+        },
+        diet: {
+            triggers: ['diet', 'food', 'eat', 'nutrition'],
+            response: "To create your personalized diet plan, please fill out the form below with your age, height, weight, and other details. This will help me provide accurate recommendations for your needs."
+        },
+        weight_gain: {
+            triggers: ['increase weight', 'gain weight', 'want to gain', 'too thin', 'underweight'],
+            response: "I can help you gain weight in a healthy way! Please fill out the form below with your details, and select 'Weight Gain' as your health goal. I'll create a personalized high-calorie diet plan with proper nutrition guidelines."
+        },
+        weight_loss: {
+            triggers: ['lose weight', 'weight loss', 'want to lose', 'overweight'],
+            response: "I can help you lose weight safely! Please fill out the form below with your details, and select 'Weight Loss' as your health goal. I'll create a balanced diet plan that helps you achieve your target weight."
+        },
+        yes_responses: {
+            triggers: ['yes', 'yeah', 'sure', 'okay', 'yep', 'yes please'],
+            response: "Great! To get started, please scroll down and fill out the form with your details. Make sure to include your:\n• Age\n• Height\n• Weight\n• Activity Level\n• Dietary Preferences\n• Health Goals\nThis will help me create a personalized plan for you!"
+        },
+        health: {
+            triggers: ['health', 'wellness', 'healthy', 'lifestyle'],
+            response: "Your health is our priority! To provide personalized advice, please fill out the form below with your details. This will help me understand your needs better."
+        }
+    };
+
+    for (const category in responses) {
+        if (responses[category].triggers.some(trigger => input.includes(trigger))) {
+            return responses[category].response;
+        }
+    }
+
+    return "To help you better, please fill out the form below with your details. This will allow me to provide personalized recommendations for your specific needs. Include your age, height, weight, and health goals.";
+}
         function calculateHealthyWeight(height) {
             const heightInMeters = height / 100;
             const minWeight = (18.5 * heightInMeters * heightInMeters).toFixed(1);
@@ -791,7 +1076,6 @@ background-image:
             dietPlan = generateMaintenancePlan(diet, dailyCalories);
     }
 
-    // Display results
     const resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML = `
         <h3 class="typing-text">Your Health Analysis</h3>
@@ -856,7 +1140,7 @@ background-image:
         
 
      function generateWeightGainPlan(dietType, calories) {
-    const targetCalories = calories + 500; // 500 calorie surplus
+    const targetCalories = calories + 500; 
     let plan = {
         breakfast: [],
         lunch: [],
@@ -956,7 +1240,7 @@ background-image:
 }
 
 function generateMuscleGainPlan(dietType, calories) {
-    const targetCalories = calories + 300; // 300 calorie surplus with high protein
+    const targetCalories = calories + 300; 
     let plan = {
         breakfast: [],
         lunch: [],
@@ -1286,9 +1570,9 @@ function generateSnacksHTML(snacks) {
 
 function calculateMacros(targetCalories, macroRatios) {
     return {
-        protein: (targetCalories * macroRatios.protein) / 4, // 4 calories per gram of protein
-        carbs: (targetCalories * macroRatios.carbs) / 4,    // 4 calories per gram of carbs
-        fats: (targetCalories * macroRatios.fats) / 9       // 9 calories per gram of fat
+        protein: (targetCalories * macroRatios.protein) / 4, 
+        carbs: (targetCalories * macroRatios.carbs) / 4,    
+        fats: (targetCalories * macroRatios.fats) / 9       
     };
 }
 
