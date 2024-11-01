@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline';">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Chat-Bot</title>
+    <style>
+        body {  
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1C1E2D; /* Dark slate base */
+background-image: 
+    radial-gradient(at 47% 33%, hsl(234, 41%, 24%) 0, transparent 59%),  /* Deep blue */
+    radial-gradient(at 82% 65%, hsl(226, 39%, 28%) 0, transparent 55%),  /* Steel blue */
+    radial-gradient(at 20% 10%, hsl(232, 35%, 32%) 0, transparent 50%);  /* Dusty blue */
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;
+        }
+
+        .analysis-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .analysis-section h4 {
+            margin-top: 0;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .analysis-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .analysis-section li {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+        #app {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            gap: 2rem;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        nav ul {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            color: rgba(15, 14, 14, 0.9);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        #content {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 2rem;
+        }
+
+        .input-container label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .input-container input,
+        .input-container textarea,
+        .input-container select {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-container input::placeholder,
+        .input-container textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .input-container input:focus,
+        .input-container textarea:focus,
+        .input-container select:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+            outline: none;
+        }
+
+        .input-container select option {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .submit-button {
+    /* Glassmorphism base */
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    
+    /* Button styling */
+    color: white;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    max-width: 300px;
+    display: block;
+    margin: 2rem auto;
+    
+    /* Animation setup */
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    animation: buttonPulse 2s infinite;
+    
+    /* Glass effect shadow */
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* Pulse animation */
+@keyframes buttonPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.47);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    }
+}
+
+/* Hover effect with preserved glassmorphism */
+.submit-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.47);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    animation: none;
+}
+
+/* Click effect */
+.submit-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 5px 15px 0 rgba(31, 38, 135, 0.37);
+}
+
+/* Ripple effect */
+.submit-button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease-out, height 0.6s ease-out, opacity 0.6s ease-out;
+    opacity: 1;
+}
+
+.submit-button:active::after {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+}
+
+/* Loading state */
+.submit-button.loading {
+    position: relative;
+    cursor: wait;
+}
+
+.submit-button.loading::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-top: -10px;
+    margin-left: -10px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Disable hover effects while loading */
+.submit-button.loading:hover {
+    transform: none;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Add shimmer effect */
+@keyframes shimmer {
+    0% {
+        background-position: -100% 0;
+    }
+    100% {
+        background-position: 100% 0;
+    }
+}
+
+.submit-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    background-size: 200% 100%;
+    animation: shimmer 3s infinite;
+    pointer-events: none;
+}
+        .response-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            margin-top: 3rem;
+            padding: 2rem;
+            border-radius: 12px;
+        }
+
+        .response-container ul {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+
+        .response-container li {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            animation: slideIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        footer {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            #content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .input-container {
+                margin-bottom: 1.5rem;
+            }
+        }
+        footer {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.footer-mission {
+    margin-bottom: 2rem;
+}
+
+.footer-mission h3 {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.footer-mission ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.footer-mission li {
+    margin: 0.5rem 0;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-quote {
+    font-style: italic;
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 2rem 0;
+    padding: 1rem;
+    border-left: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer-contact {
+    margin: 2rem 0;
+    padding: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-contact p {
+    margin: 0.5rem 0;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.copyright {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 768px) {
+    footer {
+        padding: 2rem 1rem;
+    }
+    
+    .footer-quote {
+        font-size: 1.1rem;
+        margin: 1.5rem 0;
+    }
+}
+.diet-plan-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .meal-time {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .meal-time h4 {
+            color: #ffffff;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .meal-details {
+            padding-left: 1rem;
+        }
+
+        .macro-distribution {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .macro-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .nutrition-tips {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .nutrition-tips ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .nutrition-tips li {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .nutrition-tips li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .response-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #d4d4d4; /* Changed to darker white */
+            margin-top: 3rem;
+            padding: 2rem;
+            border-radius: 12px;
+        }
+
+        /* Add new styles for typing animation */
+        .typing-text {
+            overflow: hidden;
+            border-right: 2px solid #fff;
+            white-space: nowrap;
+            margin: 0;
+            animation: typing 3.5s steps(40, end),
+                       blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #fff; }
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s ease-in forwards;
+            animation-delay: 3.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Add styles for health metrics */
+        .analysis-section p {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .analysis-section p[style*="color: #4CAF50"] {
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .analysis-section p[style*="color: #FFA726"] {
+            background: rgba(255, 167, 38, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <div class="logo">HEALTH CHAT-BOT</div>
+            <nav>
+                <ul>
+                    <li><a href="#" onclick="changeContent('home-health')">Home/Health</a></li>
+                    <li><a href="#" onclick="changeContent('about')">About</a></li>
+                    <li><a href="#" onclick="changeContent('contact')">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <div id="content">
+                <!-- Content will be loaded here -->
+            </div>
+        </main>
+
+       <footer>
+    <div class="footer-content">
+        <div class="footer-mission">
+            <h3>Our Mission for Your Health</h3>
+            <p>At Health Chat-Bot, we're dedicated to making health and wellness accessible to everyone. Our goal is to:</p>
+            <ul>
+                <li>Provide personalized health guidance</li>
+                <li>Support your journey to a healthier lifestyle</li>
+                <li>Offer customized diet plans for various health goals</li>
+                <li>Make health information easily accessible</li>
+            </ul>
+            <div class="footer-quote">
+                "Your health is an investment, not an expense."
+            </div>
+        </div>
+        <div class="footer-contact">
+             <p>Questions about your health journey? We're here to help!</p>
+             <p>Email: at.sahil006@gmail.com</p>
+         </div>
+        <p class="copyright">&copy; 2023 Health Chat-Bot. All rights reserved  to "SAHIL YADAV"</p>
+    </div>
+</footer>
+</div>
+
+    
+
+    <script>
+       document.addEventListener('DOMContentLoaded', function() {
+            changeContent('home-health');
+        });
+
+        function changeContent(page) {
+            var contentDiv = document.getElementById('content');
+            
+            if(page === 'home-health') {
+                contentDiv.innerHTML = `
+                    <h2>Welcome to the Health Chat-Bot</h2>
+                    <div class="form-container">
+                        <div class="input-container">
+                            <label for="age">Age:</label>
+                            <input type="number" id="age" placeholder="Enter your age" required>
+                        </div>
+                        <div class="input-container">
+                            <label for="height">Height (cm):</label>
+                            <input type="number" id="height" placeholder="Enter your height" required>
+                        </div>
+                        <div class="input-container">
+                            <label for="weight">Weight (kg):</label>
+                            <input type="number" id="weight" placeholder="Enter your weight" required>
+                        </div>
+                        <div class="input-container">
+                            <label for="gender">Gender:</label>
+                            <select id="gender" required>
+                                <option value="">Select gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                        <div class="input-container">
+                            <label for="activity">Activity Level:</label>
+                            <select id="activity" required>
+                                <option value="">Select activity level</option>
+                                <option value="sedentary">Sedentary (little or no exercise)</option>
+                                <option value="light">Light Exercise (1-3 days/week)</option>
+                                <option value="moderate">Moderate Exercise (3-5 days/week)</option>
+                                <option value="active">Active (6-7 days/week)</option>
+                                <option value="very_active">Very Active (intense exercise daily)</option>
+                            </select>
+                        </div>
+                        <div class="input-container">
+                            <label for="diet">Dietary Preference:</label>
+                            <select id="diet" required>
+                                <option value="">Select your preference</option>
+                                <option value="veg">Vegetarian</option>
+                                <option value="non-veg">Non-Vegetarian</option>
+                                <option value="vegan">Vegan</option>
+                            </select>
+                        </div>
+                        <div class="input-container">
+                            <label for="goal">Health Goal:</label>
+                            <select id="goal" required>
+                                <option value="">Select your goal</option>
+                                <option value="weight-loss">Weight Loss</option>
+                                <option value="weight-gain">Weight Gain</option>
+                                <option value="muscle-gain">Muscle Building</option>
+                                <option value="maintenance">Maintenance</option>
+                            </select>
+                        </div>
+                        <button onclick="calculateHealth()" class="submit-button">Generate Diet Plan</button>
+                        <div id="results" class="response-container"></div>
+                    </div>
+                `;
+            }
+        }
+
+        function calculateHealthyWeight(height) {
+            const heightInMeters = height / 100;
+            const minWeight = (18.5 * heightInMeters * heightInMeters).toFixed(1);
+            const maxWeight = (24.9 * heightInMeters * heightInMeters).toFixed(1);
+            return { min: minWeight, max: maxWeight };
+        }
+
+        function getWeightAdvice(currentWeight, healthyRange) {
+            if (currentWeight < healthyRange.min) {
+                return `You need to gain ${(healthyRange.min - currentWeight).toFixed(1)} kg to reach a healthy weight`;
+            } else if (currentWeight > healthyRange.max) {
+                return `You need to lose ${(currentWeight - healthyRange.max).toFixed(1)} kg to reach a healthy weight`;
+            }
+            return "Your weight is within the healthy range!";
+        }
+
+        function getBMICategory(bmi) {
+            if (bmi < 16) {
+                return "Severe Thinness (< 16) - Urgent medical attention recommended";
+            } else if (bmi >= 16 && bmi < 17) {
+                return "Moderate Thinness (16.0 - 16.9) - Medical evaluation recommended";
+            } else if (bmi >= 17 && bmi < 18.5) {
+                return "Mild Thinness (17.0 - 18.4) - Consider healthy weight gain";
+            } else if (bmi >= 18.5 && bmi < 25) {
+                return "Normal Range (18.5 - 24.9) - Maintain healthy lifestyle";
+            } else if (bmi >= 25 && bmi < 30) {
+                return "Overweight (25.0 - 29.9) - Consider healthy weight loss";
+            } else if (bmi >= 30 && bmi < 35) {
+                return "Obese Class I (30.0 - 34.9) - Medical evaluation recommended";
+            } else if (bmi >= 35 && bmi < 40) {
+                return "Obese Class II (35.0 - 39.9) - Medical intervention recommended";
+            } else {
+                return "Obese Class III (≥ 40) - Urgent medical attention recommended";
+            }
+        }
+        function calculateHealth() {
+    // Get input values
+    const age = parseInt(document.getElementById('age').value);
+    const height = parseInt(document.getElementById('height').value);
+    const weight = parseInt(document.getElementById('weight').value);
+    const gender = document.getElementById('gender').value;
+    const activity = document.getElementById('activity').value;
+    const diet = document.getElementById('diet').value;
+    const goal = document.getElementById('goal').value;
+
+    // Validate inputs
+    if (!age || !height || !weight || !gender || !activity || !diet || !goal) {
+        alert('Please fill in all required fields');
+        return;
+    }
+
+    // Calculate BMI and healthy weight range
+    const heightInMeters = height / 100;
+    const bmi = weight / (heightInMeters * heightInMeters);
+    const healthyRange = calculateHealthyWeight(height);
+    const weightAdvice = getWeightAdvice(weight, healthyRange);
+
+    // Calculate BMR and calories
+    let bmr;
+    if (gender === 'male') {
+        bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+    } else {
+        bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+    }
+
+    // Calculate daily calories
+    const activityMultipliers = {
+        sedentary: 1.2,
+        light: 1.375,
+        moderate: 1.55,
+        active: 1.725,
+        very_active: 1.9
+    };
+
+    const dailyCalories = Math.round(bmr * activityMultipliers[activity]);
+
+    // Generate diet plan
+    let dietPlan;
+    switch(goal) {
+        case 'weight-loss':
+            dietPlan = generateWeightLossPlan(diet, dailyCalories);
+            break;
+        case 'weight-gain':
+            dietPlan = generateWeightGainPlan(diet, dailyCalories);
+            break;
+        case 'muscle-gain':
+            dietPlan = generateMuscleGainPlan(diet, dailyCalories);
+            break;
+        default:
+            dietPlan = generateMaintenancePlan(diet, dailyCalories);
+    }
+
+    // Display results
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = `
+        <h3 class="typing-text">Your Health Analysis</h3>
+        <div class="analysis-section fade-in">
+            <h4>Body Metrics:</h4>
+            <p>BMI: ${bmi.toFixed(1)} - ${getBMICategory(bmi)}</p>
+            <p>Your Current Weight: ${weight} kg</p>
+            <p>Healthy Weight Range: ${healthyRange.min} - ${healthyRange.max} kg</p>
+            <p style="color: ${weight >= healthyRange.min && weight <= healthyRange.max ? '#4CAF50' : '#FFA726'}">${weightAdvice}</p>
+            <p>Daily Calorie Needs: ${dailyCalories} calories</p>
+        </div>
+
+        <div class="analysis-section fade-in">
+            <h4>Recommended Daily Intake:</h4>
+            <ul>
+                <li>For Weight Loss: ${Math.round(dailyCalories - 500)} calories/day</li>
+                <li>For Maintenance: ${dailyCalories} calories/day</li>
+                <li>For Weight Gain: ${Math.round(dailyCalories + 500)} calories/day</li>
+            </ul>
+        </div>
+
+        <div class="analysis-section fade-in">
+            <h4>Macronutrient Breakdown:</h4>
+            <ul>
+                <li>Protein: ${Math.round(dailyCalories * 0.3 / 4)}g (30%)</li>
+                <li>Carbohydrates: ${Math.round(dailyCalories * 0.4 / 4)}g (40%)</li>
+                <li>Fats: ${Math.round(dailyCalories * 0.3 / 9)}g (30%)</li>
+            </ul>
+        </div>
+        
+        <div class="diet-plan-container fade-in">
+            <h3>Your Personalized Diet Plan</h3>
+            <div class="meal-time">
+                <h4>Breakfast (${Math.round(dailyCalories * 0.3)} calories)</h4>
+                <ul>
+                    ${dietPlan.breakfast.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </div>
+            <div class="meal-time">
+                <h4>Lunch (${Math.round(dailyCalories * 0.35)} calories)</h4>
+                <ul>
+                    ${dietPlan.lunch.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </div>
+            <div class="meal-time">
+                <h4>Dinner (${Math.round(dailyCalories * 0.35)} calories)</h4>
+                <ul>
+                    ${dietPlan.dinner.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </div>
+            <div class="meal-time">
+                <h4>Snacks</h4>
+                <ul>
+                    ${dietPlan.snacks.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </div>
+        </div>
+    `;
+        }
+
+    
+        
+
+     function generateWeightGainPlan(dietType, calories) {
+    const targetCalories = calories + 500; // 500 calorie surplus
+    let plan = {
+        breakfast: [],
+        lunch: [],
+        dinner: [],
+        snacks: []
+    };
+
+    switch(dietType) {
+        case 'veg':
+            plan = {
+                breakfast: [
+                    "Large bowl of oatmeal with nuts and dried fruits (400 cal)",
+                    "2 whole wheat toast with avocado (300 cal)",
+                    "Protein smoothie with banana and peanut butter (350 cal)",
+                    "Mixed seeds and nuts (150 cal)"
+                ],
+                lunch: [
+                    "Brown rice with kidney beans curry (450 cal)",
+                    "Paneer tikka masala (350 cal)",
+                    "Mixed vegetable stir fry (200 cal)",
+                    "Whole grain roti with ghee (200 cal)"
+                ],
+                dinner: [
+                    "Quinoa pulao (400 cal)",
+                    "Lentil curry (300 cal)",
+                    "Grilled vegetables with olive oil (250 cal)",
+                    "Greek yogurt with honey (200 cal)"
+                ],
+                snacks: [
+                    "Trail mix with dried fruits (300 cal)",
+                    "Protein bar (250 cal)",
+                    "Banana smoothie with almond milk (200 cal)",
+                    "Hummus with pita bread (250 cal)"
+                ]
+            };
+            break;
+
+        case 'non-veg':
+            plan = {
+                breakfast: [
+                    "4 egg omelet with cheese (400 cal)",
+                    "2 whole wheat toast with butter (250 cal)",
+                    "Chicken sausages (300 cal)",
+                    "Protein shake with whole milk (350 cal)"
+                ],
+                lunch: [
+                    "Grilled chicken breast (400 cal)",
+                    "Brown rice with olive oil (350 cal)",
+                    "Avocado salad (250 cal)",
+                    "Mixed nuts (200 cal)"
+                ],
+                dinner: [
+                    "Salmon with herbs (450 cal)",
+                    "Sweet potato mash (300 cal)",
+                    "Steamed vegetables with butter (200 cal)",
+                    "Quinoa (250 cal)"
+                ],
+                snacks: [
+                    "Protein shake with banana (300 cal)",
+                    "Tuna sandwich (350 cal)",
+                    "Greek yogurt with granola (250 cal)",
+                    "Mixed nuts and dried fruits (200 cal)"
+                ]
+            };
+            break;
+
+        case 'vegan':
+            plan = {
+                breakfast: [
+                    "Tofu scramble with vegetables (350 cal)",
+                    "Overnight oats with chia seeds and nuts (400 cal)",
+                    "Plant-based protein shake (300 cal)",
+                    "Fresh fruit smoothie bowl (250 cal)"
+                ],
+                lunch: [
+                    "Tempeh stir-fry (400 cal)",
+                    "Quinoa with roasted vegetables (350 cal)",
+                    "Avocado toast with seeds (300 cal)",
+                    "Chickpea salad (250 cal)"
+                ],
+                dinner: [
+                    "Lentil and mushroom loaf (400 cal)",
+                    "Sweet potato wedges (300 cal)",
+                    "Grilled vegetables with tahini (250 cal)",
+                    "Vegan protein shake (200 cal)"
+                ],
+                snacks: [
+                    "Energy balls (dates and nuts) (300 cal)",
+                    "Almond butter with banana (250 cal)",
+                    "Vegan protein bar (200 cal)",
+                    "Mixed nuts and dried fruits (250 cal)"
+                ]
+            };
+            break;
+    }
+    return plan;
+}
+
+function generateMuscleGainPlan(dietType, calories) {
+    const targetCalories = calories + 300; // 300 calorie surplus with high protein
+    let plan = {
+        breakfast: [],
+        lunch: [],
+        dinner: [],
+        snacks: []
+    };
+
+    switch(dietType) {
+        case 'veg':
+            plan = {
+                breakfast: [
+                    "Protein oatmeal with nuts (350 cal)",
+                    "Cottage cheese pancakes (300 cal)",
+                    "Plant-based protein shake (200 cal)",
+                    "Chia seed pudding (150 cal)"
+                ],
+                lunch: [
+                    "Quinoa and black bean bowl (400 cal)",
+                    "Tofu steak (300 cal)",
+                    "Roasted vegetables (200 cal)",
+                    "Protein smoothie (250 cal)"
+                ],
+                dinner: [
+                    "Lentil pasta with vegetables (400 cal)",
+                    "Tempeh curry (350 cal)",
+                    "Brown rice (200 cal)",
+                    "Greek yogurt (150 cal)"
+                ],
+                snacks: [
+                    "Protein bar (200 cal)",
+                    "Almonds and walnuts (150 cal)",
+                    "Protein shake (200 cal)",
+                    "Rice cakes with peanut butter (150 cal)"
+                ]
+            };
+            break;
+
+        case 'non-veg':
+            plan = {
+                breakfast: [
+                    "6 egg whites with 2 whole eggs (300 cal)",
+                    "Oatmeal with protein powder (350 cal)",
+                    "Turkey bacon (200 cal)",
+                    "Whole grain toast (150 cal)"
+                ],
+                lunch: [
+                    "Grilled chicken breast (350 cal)",
+                    "Sweet potato (250 cal)",
+                    "Broccoli and beans (200 cal)",
+                    "Protein shake (250 cal)"
+                ],
+                dinner: [
+                    "Lean beef/fish (400 cal)",
+                    "Quinoa (250 cal)",
+                    "Steamed vegetables (150 cal)",
+                    "Greek yogurt (150 cal)"
+                ],
+                snacks: [
+                    "Protein shake with banana (300 cal)",
+                    "Tuna with crackers (250 cal)",
+                    "Cottage cheese (150 cal)",
+                    "Mixed nuts (200 cal)"
+                ]
+            };
+            break;
+
+        case 'vegan':
+            plan = {
+                breakfast: [
+                    "Tofu scramble (300 cal)",
+                    "Protein smoothie bowl (350 cal)",
+                    "Whole grain toast with avocado (250 cal)",
+                    "Plant-based protein shake (200 cal)"
+                ],
+                lunch: [
+                    "Seitan stir-fry (400 cal)",
+                    "Quinoa with legumes (300 cal)",
+                    "Roasted vegetables (200 cal)",
+                    "Vegan protein shake (200 cal)"
+                ],
+                dinner: [
+                    "Tempeh and vegetable curry (350 cal)",
+                    "Brown rice (250 cal)",
+                    "Steamed broccoli (100 cal)",
+                    "Plant-based protein shake (200 cal)"
+                ],
+                snacks: [
+                    "Vegan protein bar (250 cal)",
+                    "Mixed nuts and seeds (200 cal)",
+                    "Protein smoothie (250 cal)",
+                    "Edamame (150 cal)"
+                ]
+            };
+            break;
+    }
+    return plan;
+}
+
+function generateMaintenancePlan(dietType, calories) {
+    let plan = {
+        breakfast: [],
+        lunch: [],
+        dinner: [],
+        snacks: []
+    };
+
+    switch(dietType) {
+        case 'veg':
+            plan = {
+                breakfast: [
+                    "Oatmeal with fruits and nuts (300 cal)",
+                    "Greek yogurt with honey (150 cal)",
+                    "Whole grain toast with avocado (200 cal)",
+                    "Green tea or coffee"
+                ],
+                lunch: [
+                    "Mixed vegetable curry (300 cal)",
+                    "Brown rice (200 cal)",
+                    "Lentil soup (150 cal)",
+                    "Garden salad (100 cal)"
+                ],
+                dinner: [
+                    "Quinoa with stir-fried vegetables (300 cal)",
+                    "Cottage cheese curry (200 cal)",
+                    "Mixed greens (100 cal)",
+                    "Yogurt (100 cal)"
+                ],
+                snacks: [
+                    "Fresh fruits (100 cal)",
+                    "Handful of nuts (150 cal)",
+                    "Vegetable juice (50 cal)",
+                    "Rice cakes (100 cal)"
+                ]
+            };
+            break;
+
+        case 'non-veg':
+            plan = {
+                breakfast: [
+                    "3 egg omelet with vegetables (250 cal)",
+                    "Whole grain toast (150 cal)",
+                    "Turkey bacon (150 cal)",
+                    "Fresh fruit (100 cal)"
+                ],
+                lunch: [
+                    "Grilled chicken breast (300 cal)",
+                    "Quinoa (200 cal)",
+                    "Steamed vegetables (100 cal)",
+                    "Olive oil dressing (120 cal)"
+                ],
+                dinner: [
+                    "Baked fish (250 cal)",
+                    "Brown rice (200 cal)",
+                    "Roasted vegetables (150 cal)",
+                    "Light sauce (100 cal)"
+                ],
+                snacks: [
+                    "Greek yogurt (120 cal)",
+                    "Apple with almond butter (200 cal)",
+                    "Protein shake (150 cal)",
+                    "Carrot sticks (50 cal)"
+                ]
+            };
+            break;
+
+        case 'vegan':
+            plan = {
+                breakfast: [
+                    "Smoothie bowl with plant protein (300 cal)",
+                    "Whole grain toast with hummus (200 cal)",
+                    "Chia seed pudding (150 cal)",
+                    "Green tea"
+                ],
+                lunch: [
+                    "Buddha bowl with tempeh (350 cal)",
+                    "Quinoa (200 cal)",
+                    "Roasted vegetables (150 cal)",
+                    "Tahini dressing (100 cal)"
+                ],
+                dinner: [
+                    "Lentil and vegetable curry (300 cal)",
+                    "Brown rice (200 cal)",
+                    "Steamed vegetables (100 cal)",
+                    "Plant-based yogurt (100 cal)"
+                ],
+                snacks: [
+                    "Mixed nuts and seeds (150 cal)",
+                    "Fresh fruit (100 cal)",
+                    "Energy balls (150 cal)",
+                    "Vegetable sticks with hummus (100 cal)"
+                ]
+            };
+            break;
+    }
+    return plan;
+
+};
+
+function processHealthInput() {
+    const age = parseInt(document.getElementById('age').value);
+    const height = parseInt(document.getElementById('height').value);
+    const weight = parseInt(document.getElementById('weight').value);
+    const gender = document.getElementById('gender').value;
+    const activity = document.getElementById('activity').value;
+    const diet = document.getElementById('diet').value;
+    const goal = document.getElementById('goal').value;
+    const healthConditions = Array.from(document.getElementById('health-conditions').selectedOptions).map(option => option.value);
+
+    if (!validateInputs(age, height, weight, gender, activity, diet, goal)) {
+        alert('Please fill in all required fields');
+        return;
+    }
+
+    const metrics = calculateHealthMetrics(age, height, weight, gender, activity);
+    const dietPlan = generateDietPlan(metrics, diet, goal, healthConditions);
+    
+    displayResults(metrics, dietPlan);
+}
+
+function calculateHealthMetrics(age, height, weight, gender, activity) {
+    const heightInMeters = height / 100;
+    const bmi = weight / (heightInMeters * heightInMeters);
+    const bmr = calculateBMR(weight, height, age, gender);
+    const tdee = calculateTDEE(bmr, activity);
+
+    return {
+        bmi: bmi,
+        bmr: bmr,
+        tdee: tdee,
+        category: getBMICategory(bmi)
+    };
+}
+
+function generateDietPlan(metrics, dietPreference, goal, healthConditions) {
+    const basePlan = dietPlans[goal];
+    const targetCalories = Math.round(metrics.tdee * basePlan.calories.multiplier);
+    const macros = calculateMacros(targetCalories, basePlan.calories.macros);
+    const meals = adjustMealsForDiet(basePlan.meals[dietPreference], healthConditions);
+
+    return {
+        targetCalories: targetCalories,
+        macros: macros,
+        meals: meals,
+        recommendations: generateRecommendations(metrics, goal, healthConditions)
+    };
+}
+function displayResults(metrics, dietPlan) {
+    const responseDiv = document.getElementById('response');
+    responseDiv.innerHTML = `
+        <h3>Your Health Analysis</h3>
+        <div class="analysis-section">
+            <h4>Body Metrics:</h4>
+            <p>BMI: ${metrics.bmi.toFixed(1)} (${metrics.category})</p>
+            <p>Daily Calorie Needs: ${Math.round(metrics.tdee)} calories</p>
+        </div>
+
+        <div class="diet-plan-container">
+            <h3>Your Personalized Diet Plan</h3>
+            <div class="macro-distribution">
+                <div class="macro-item">
+                    <h4>Target Calories</h4>
+                    <p>${dietPlan.targetCalories} kcal/day</p>
+                </div>
+                <div class="macro-item">
+                    <h4>Protein</h4>
+                    <p>${Math.round(dietPlan.macros.protein)}g</p>
+                </div>
+                <div class="macro-item">
+                    <h4>Carbs</h4>
+                    <p>${Math.round(dietPlan.macros.carbs)}g</p>
+                </div>
+                <div class="macro-item">
+                    <h4>Fats</h4>
+                    <p>${Math.round(dietPlan.macros.fats)}g</p>
+                </div>
+            </div>
+
+            <div class="meal-schedule">
+                <h4>Daily Meal Plan</h4>
+                ${generateMealHTML(dietPlan.meals)}
+            </div>
+
+            <div class="nutrition-tips">
+                <h4>Recommendations</h4>
+                <ul>
+                    ${dietPlan.recommendations.map(tip => `<li>${tip}</li>`).join('')}
+                </ul>
+            </div>
+        </div>
+    `;
+}
+
+function generateMealHTML(meals) {
+    return `
+        <div class="meal-time">
+            <h4>Breakfast (${meals.breakfast.calories} calories)</h4>
+            <div class="meal-details">
+                ${meals.breakfast.items.map(item => `<p>• ${item}</p>`).join('')}
+            </div>
+        </div>
+        <div class="meal-time">
+            <h4>Lunch (${meals.lunch.calories} calories)</h4>
+            <div class="meal-details">
+                ${meals.lunch.items.map(item => `<p>• ${item}</p>`).join('')}
+            </div>
+        </div>
+        <div class="meal-time">
+            <h4>Dinner (${meals.dinner.calories} calories)</h4>
+            <div class="meal-details">
+                ${meals.dinner.items.map(item => `<p>• ${item}</p>`).join('')}
+            </div>
+        </div>
+        ${generateSnacksHTML(meals.snacks)}
+    `;
+}
+
+function generateSnacksHTML(snacks) {
+    return snacks.map(snack => `
+        <div class="meal-time">
+            <h4>${snack.title} (${snack.calories} calories)</h4>
+            <div class="meal-details">
+                ${snack.items.map(item => `<p>• ${item}</p>`).join('')}
+            </div>
+        </div>
+    `).join('');
+}
+
+function calculateMacros(targetCalories, macroRatios) {
+    return {
+        protein: (targetCalories * macroRatios.protein) / 4, // 4 calories per gram of protein
+        carbs: (targetCalories * macroRatios.carbs) / 4,    // 4 calories per gram of carbs
+        fats: (targetCalories * macroRatios.fats) / 9       // 9 calories per gram of fat
+    };
+}
+
+function generateRecommendations(metrics, goal, healthConditions) {
+    let tips = [
+        "Stay hydrated - drink at least 8 glasses of water daily",
+        "Eat slowly and mindfully",
+        "Get 7-9 hours of sleep each night"
+    ];
+
+    if (goal === 'weight-gain') {
+        tips.push(
+            "Eat every 2-3 hours",
+            "Include protein with every meal",
+            "Add healthy fats to increase calorie intake"
+        );
+    } else if (goal === 'weight-loss') {
+        tips.push(
+            "Use smaller plates to control portions",
+            "Fill half your plate with vegetables",
+            "Plan your meals in advance"
+        );
+    }
+
+    if (healthConditions.includes('diabetes')) {
+        tips.push(
+            "Monitor your blood sugar regularly",
+            "Space your meals evenly throughout the day",
+            "Choose low glycemic index foods"
+        );
+    }
+
+    return tips;
+}
+
+function validateInputs(...inputs) {
+    return inputs.every(input => input !== null && input !== '' && input !== undefined);
+}
+
+        function sendMessage(event) {
+            event.preventDefault();
+            
+            var nameInput = document.getElementById('name');
+            var emailInput = document.getElementById('email');
+            var messageInput = document.getElementById('message');
+
+            const submitButton = event.target.querySelector('button');
+            submitButton.innerHTML = 'Sending...';
+            submitButton.disabled = true;
+
+            var templateParams = {
+                from_name: nameInput.value,
+                from_email: emailInput.value,
+                message: messageInput.value,
+                to_email: 'at.sahil006@gmail.com'
+            };
+
+            emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+                .then(function(response) {
+                    alert('Thank you for your message. We will get back to you soon!');
+                    nameInput.value = '';
+                    emailInput.value = '';
+                    messageInput.value = '';
+                    submitButton.innerHTML = 'Send Message';
+                    submitButton.disabled = false;
+                }, function(error) {
+                    console.error('Error:', error);
+                    alert('There was an error sending your message. Please try again.');
+                    submitButton.innerHTML = 'Send Message';
+                    submitButton.disabled = false;
+                });
+
+            return false;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {changeContent('home-health');});
+    </script>
+</body>
+</html>
